@@ -1,0 +1,3 @@
+class Property extends AbstractSpace {
+  
+}
