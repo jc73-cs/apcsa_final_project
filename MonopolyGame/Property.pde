@@ -6,5 +6,4 @@ class Property extends AbstractSpace {
   private String name;
   private boolean mortgaged; 
   
-  public Property(int price, 
 }
