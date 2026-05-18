@@ -1,0 +1,41 @@
+name,type,extra data
+and GO,Go
+Mediterranean Avenue,Property,BROWN
+Community Chest,CommunityChest
+Baltic Avenue,Property,BROWN
+Income Tax,Tax,200
+Reading Railroad,Railroad
+Oriental Avenue,Property,LIGHT_BLUE
+Chance,Chance
+Vermont Avenue,Property,LIGHT_BLUE
+Connecticut Avenue,Property,LIGHT_BLUE
+Jail,Jail
+St. Charles Place,Property,PINK
+Electric Company,Utility
+States Avenue,Property,PINK
+Virginia Avenue,Property,PINK
+Pennsylvania Railroad,Railroad
+St. James Place,Property,ORANGE
+Community Chest,CommunityChest
+Tennessee Avenue,Property,ORANGE
+New York Avenue,Property,ORANGE
+Free Parking,FreeParking
+Kentucky Avenue,Property,RED
+Chance,Chance
+Indiana Avenue,Property,RED
+Illinois Avenue,Property,RED
+B&O Railroad,Railroad
+Atlantic Avenue,Property,YELLOW
+Ventnor Avenue,Property,YELLOW
+Water Works,Utility
+Marvin Gardens,Property,YELLOW
+Go To Jail,GoToJail
+Pacific Avenue,Property,GREEN
+North Carolina Avenue,Property,GREEN
+Community Chest,CommunityChest
+Pennsylvania Avenue,Property,GREEN
+Short Line,Railroad
+Chance,Chance
+Park Place,Property,DARK_BLUE
+Luxury Tax,Tax,100
+Boardwalk,Property,DARK_BLUE

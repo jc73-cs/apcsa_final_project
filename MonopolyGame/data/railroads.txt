@@ -1,0 +1,5 @@
+name,cost,mortgage
+Reading Railroad,200,100
+Pennsylvania Railroad,200,100
+B&O Railroad,200,100
+Short Line,200,100
