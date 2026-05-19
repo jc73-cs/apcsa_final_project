@@ -1,41 +1,41 @@
-name,type,extra data
-and GO,Go
-Mediterranean Avenue,Property,BROWN
+name,type
+Go,Go
+Mediterranean Avenue,Property
 Community Chest,CommunityChest
-Baltic Avenue,Property,BROWN
-Income Tax,Tax,200
+Baltic Avenue,Property
+Income Tax,Tax
 Reading Railroad,Railroad
-Oriental Avenue,Property,LIGHT_BLUE
+Oriental Avenue,Property
 Chance,Chance
-Vermont Avenue,Property,LIGHT_BLUE
-Connecticut Avenue,Property,LIGHT_BLUE
+Vermont Avenue,Property
+Connecticut Avenue,Property
 Jail,Jail
-St. Charles Place,Property,PINK
+St. Charles Place,Property
 Electric Company,Utility
-States Avenue,Property,PINK
-Virginia Avenue,Property,PINK
+States Avenue,Property
+Virginia Avenue,Property
 Pennsylvania Railroad,Railroad
-St. James Place,Property,ORANGE
+St. James Place,Property
 Community Chest,CommunityChest
-Tennessee Avenue,Property,ORANGE
-New York Avenue,Property,ORANGE
+Tennessee Avenue,Property
+New York Avenue,Property
 Free Parking,FreeParking
-Kentucky Avenue,Property,RED
+Kentucky Avenue,Property
 Chance,Chance
-Indiana Avenue,Property,RED
-Illinois Avenue,Property,RED
+Indiana Avenue,Property
+Illinois Avenue,Property
 B&O Railroad,Railroad
-Atlantic Avenue,Property,YELLOW
-Ventnor Avenue,Property,YELLOW
+Atlantic Avenue,Property
+Ventnor Avenue,Property
 Water Works,Utility
-Marvin Gardens,Property,YELLOW
+Marvin Gardens,Property
 Go To Jail,GoToJail
-Pacific Avenue,Property,GREEN
-North Carolina Avenue,Property,GREEN
+Pacific Avenue,Property
+North Carolina Avenue,Property
 Community Chest,CommunityChest
-Pennsylvania Avenue,Property,GREEN
+Pennsylvania Avenue,Property
 Short Line,Railroad
 Chance,Chance
-Park Place,Property,DARK_BLUE
-Luxury Tax,Tax,100
-Boardwalk,Property,DARK_BLUE
+Park Place,Property
+Luxury Tax,Tax
+Boardwalk,Property

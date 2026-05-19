@@ -1,4 +1,10 @@
 class Tax extends AbstractSpace {
-   private int amount;
+  private String name; 
+  private int amount;
+  
+  public Tax(String name, int amount) {
+    this.name = name;
+    this.amount = amount;
+  }
 
 }
