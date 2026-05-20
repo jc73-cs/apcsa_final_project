@@ -18,5 +18,9 @@ class Property extends AbstractSpace {
     this.rent[3] = house3;
     this.rent[4] = house4;
     this.rent[5] = hotel;
+    this.houses = 0;
+    this.buildingCost = buildingCost;
+    this.mortgagePrice = mortgagePrice;
+    this.mortgaged = false;
   }
 }

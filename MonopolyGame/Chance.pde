@@ -1,3 +1,7 @@
-class Chance {
-  private static ArrayList<String> deck; 
+import java.util.ArrayList;
+
+class Chance extends AbstractSpace {
+  private static ArrayList<String> deck;
+  
+  
 }

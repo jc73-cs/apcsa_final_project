@@ -25,9 +25,14 @@ class Board {
       Scanner communityScan = new Scanner(communityInfo);
       
       while(boardScan.hasNextLine()) {
+        int i = 0;
         String line = boardScan.nextLine();
         String[] parts = split(line, ',');
-       
+        if(parts[1].equals("Property")) {
+          String propertyLine = propertyScan.nextLine();
+          String[] propertyArgs = split(propertyLine, ',');
+          board[i] = new Property(propertyArgs[0],propertyArgs[1],propertyArgs[2],propertyArgs[3],propertyArgs[4],propertyArgs[5],propertyArgs[6],propertyArgs[7],propertyArgs[8],propertyArgs[9],propertyArgs[10]);
+        }
       }
     }
     catch(Exception e) {
