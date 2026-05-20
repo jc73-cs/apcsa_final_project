@@ -31,7 +31,8 @@ class Board {
         if(parts[1].equals("Property")) {
           String propertyLine = propertyScan.nextLine();
           String[] propertyArgs = split(propertyLine, ',');
-          board[i] = new Property(propertyArgs[0],propertyArgs[1],propertyArgs[2],propertyArgs[3],propertyArgs[4],propertyArgs[5],propertyArgs[6],propertyArgs[7],propertyArgs[8],propertyArgs[9],propertyArgs[10]);
+          board[i] = new Property(propertyArgs[0],propertyArgs[1],Integer.parseInt(propertyArgs[2]).parseToInt(),propertyArgs[3],propertyArgs[4],propertyArgs[5],propertyArgs[6],propertyArgs[7],propertyArgs[8],propertyArgs[9],propertyArgs[10]);
+          i++;
         }
       }
     }
