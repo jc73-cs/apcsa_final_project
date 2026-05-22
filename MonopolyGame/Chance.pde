@@ -1,7 +1,7 @@
-import java.util.ArrayList;
-
 class Chance extends AbstractSpace {
-  private static ArrayList<String> deck;
-  
-  
+  private Deck deck;
+  public Chance(String name, Deck deck) {
+    this.name = name;
+    this.deck = deck;
+  }
 }

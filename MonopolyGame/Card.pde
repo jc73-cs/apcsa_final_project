@@ -1,4 +1,6 @@
 class Card {
-  String description;
-  
+  public String description;
+  public Card(String description) { 
+    this.description = description.trim(); 
+  }
 }

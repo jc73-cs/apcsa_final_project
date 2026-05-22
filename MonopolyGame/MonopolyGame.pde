@@ -1,3 +1,3 @@
-class Monopoly {
+class GameController {
   
 }

@@ -1,5 +1,4 @@
 class Property extends AbstractSpace {
-  private String name;
   private String colorGroup;
   private int cost;
   private int[] rent = new int[6];
