@@ -48,7 +48,13 @@ class Board {
           board[i] = new Chance(spaceName, chanceDeck);
         } 
         else if (spaceType.equals("Tax")) {
-          int taxAmount = spaceName.equals("Income Tax") ? 200 : 100;
+          int taxAmount;
+          if(spaceName.equals("Income Tax")) {
+            taxAmount = 200;
+          }
+          else { 
+            taxAmount = 100;
+          }
           board[i] = new Tax(spaceName, taxAmount); 
         } 
         else if (spaceType.equals("Go")) {
