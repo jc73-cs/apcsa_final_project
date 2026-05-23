@@ -4,4 +4,8 @@ class Chance extends AbstractSpace {
     this.name = name;
     this.deck = deck;
   }
+  
+  public void landOn(Player p) {
+    
+  }
 }

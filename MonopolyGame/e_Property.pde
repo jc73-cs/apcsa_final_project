@@ -22,4 +22,8 @@ class Property extends AbstractSpace {
     this.mortgagePrice = mortgagePrice;
     this.mortgaged = false;
   }
+  
+  public void landOn() {
+    
+  }
 }

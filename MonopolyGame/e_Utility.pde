@@ -11,4 +11,8 @@ class Utility extends AbstractSpace {
     this.mortgaged = false;
     this.owner = null;
   }
+  
+  public void landOn() {
+    
+  }
 }
