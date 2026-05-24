@@ -3,7 +3,7 @@ class FreeParking extends AbstractSpace {
     this.name = "Free Parking"; 
   }
   
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

@@ -12,7 +12,7 @@ class Utility extends AbstractSpace {
     this.owner = null;
   }
   
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

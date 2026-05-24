@@ -23,7 +23,7 @@ class Property extends AbstractSpace {
     this.mortgaged = false;
   }
   
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

@@ -5,7 +5,7 @@ class CommunityChest extends AbstractSpace {
     this.deck = deck;
   }
   
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

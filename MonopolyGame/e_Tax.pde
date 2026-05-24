@@ -7,7 +7,7 @@ class Tax extends AbstractSpace {
     this.amount = amount;
   }
 
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

@@ -3,7 +3,7 @@ class Go extends AbstractSpace {
     this.name = "Go"; 
   }
   
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

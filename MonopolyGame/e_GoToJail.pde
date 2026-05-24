@@ -3,7 +3,7 @@ class GoToJail extends AbstractSpace {
     this.name = "Go To Jail"; 
   }
   
-  public void landOn() {
+  public void landOn(Player p) {
     
   }
 }

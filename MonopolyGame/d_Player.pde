@@ -7,16 +7,28 @@ class Player {
   private int railroads;
   private int utilities;
   private boolean passedGo;
+  private int turnCount;
+  private Token token;
   
   private int propertyCount;
 
-  public Player(String name, int startingMoney) {
+  public Player(String name, int startingMoney, Token t) {
     this.name  = name;
     this.money = startingMoney;
     this.position = 0;
     this.inJail = false;
     this.properties = new AbstractSpace[28];
     this.propertyCount = 0;
+    this.turnCount = 0;
+    this.token = t;
+  }
+  
+  public void incrementTurn() { 
+    turnCount++; 
+  }
+  
+  public int getTurnCount()   { 
+    return turnCount; 
   }
 
   public String getName() { 
