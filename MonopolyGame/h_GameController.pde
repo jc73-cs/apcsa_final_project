@@ -54,6 +54,13 @@ class GameController {
       System.out.println("Game over");
     }
   }
+  
+  public void draw() {
+    display.drawBoard();
+    display.drawSidebars();
+    display.drawDice();
+    display.drawLog();
+  }
 }
 
 GameController gc;
