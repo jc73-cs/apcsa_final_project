@@ -1,5 +1,7 @@
 class Jail extends AbstractSpace {
-  public Jail() { this.name = "Jail"; }
+  public Jail() { 
+    this.name = "Jail"; 
+  }
   
   public void landOn(Player p) {
     println(p.getName() + " is just visiting Jail");

@@ -16,31 +16,58 @@ class GameController {
   
   public void advanceTurn() {
     Player p = players[currentPlayer];
-    rollDice();
-    println("--- Turn " + p.getTurnCount() + " | " + p.getName() + " ---");
-    println("Rolled: " + dice.getDie1() + " + " + dice.getDie2() + " = " + dice.getTotal());
-    int steps = dice.getTotal();
-    p.move(steps);
-    println("Moved to: " + board.getSpace(p.getPosition()).getName());
-    AbstractSpace landed = board.getSpace(p.getPosition());
-    if (landed instanceof Property) { ((Property)landed).landOn(p, buyThresholds[currentPlayer]); }
-    else if (landed instanceof Railroad) {
-      Railroad r = (Railroad)landed;
-      ((Railroad)landed).landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()));
+    println("--- Turn " + p.getTurnCount() + " | " + p.getName() + " ---"); 
+    boolean tookTurn = true;
+    if (p.isInJail()) {
+      rollDice();
+      println("Rolled: " + dice.getDie1() + " + " + dice.getDie2() + " = " + dice.getTotal());
+      if (dice.isDoubles()) {
+        p.releaseFromJail();
+        p.move(dice.getTotal());
+        println(p.getName() + " rolled doubles, released from jail");
+      } 
+      else {
+        p.incrementJailTurn();
+        if (p.getJailTurns() >= 3) {
+          p.payMoney(50);
+          p.releaseFromJail();
+          p.move(dice.getTotal());
+          println(p.getName() + " paid $50 fine, released from jail");
+        } 
+        else {
+          println(p.getName() + " is in jail, turn skipped");
+          tookTurn = false;
+        }
+      }
+    } 
+    else {
+      rollDice();
+      println("Rolled: " + dice.getDie1() + " + " + dice.getDie2() + " = " + dice.getTotal());
+      p.move(dice.getTotal());
     }
-    else if (landed instanceof Utility) {
-      Utility u = (Utility)landed;
-      ((Utility)landed).landOn(p, buyThresholds[currentPlayer], dice.getTotal(), countUtilities(u.getOwner()));
-    }
-    else if (landed instanceof Go) { ((Go)landed).landOn(p); }
-    else if (landed instanceof GoToJail) { ((GoToJail)landed).landOn(p); }
-    else if (landed instanceof Tax) { ((Tax)landed).landOn(p); }
-    else if (landed instanceof Chance) { ((Chance)landed).landOn(p); }
-    else if (landed instanceof CommunityChest) { ((CommunityChest)landed).landOn(p); }
-    if(p.hasPassedGo()) {
-      println(p.getName() + " passed Go, collects $200");
-      p.receiveMoney(200);
-    }
+    
+    if (tookTurn) {
+      println("Moved to: " + board.getSpace(p.getPosition()).getName());
+      AbstractSpace landed = board.getSpace(p.getPosition());
+      if (landed instanceof Property)            { ((Property)landed).landOn(p, buyThresholds[currentPlayer]); }
+      else if (landed instanceof Railroad) {
+        Railroad r = (Railroad)landed;
+        r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()));
+      }
+      else if (landed instanceof Utility) {
+        Utility u = (Utility)landed;
+        u.landOn(p, buyThresholds[currentPlayer], dice.getTotal(), countUtilities(u.getOwner()));
+      }
+      else if (landed instanceof Go) { ((Go)landed).landOn(p); }
+      else if (landed instanceof GoToJail) { ((GoToJail)landed).landOn(p); }
+      else if (landed instanceof Tax) { ((Tax)landed).landOn(p); }
+      else if (landed instanceof Chance) { ((Chance)landed).landOn(p); }
+      else if (landed instanceof CommunityChest) { ((CommunityChest)landed).landOn(p); }
+      if (p.hasPassedGo()) {
+        println(p.getName() + " passed Go, collects $200");
+        p.receiveMoney(200);
+      }
+    }  
     println(p.getName() + " now has $" + p.getMoney());
     p.incrementTurn();
     currentPlayer = (currentPlayer + 1) % players.length;

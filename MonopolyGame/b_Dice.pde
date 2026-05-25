@@ -20,4 +20,8 @@ class Dice {
     die1 = 1 + (int) random(6);
     die2 = 1 + (int) random(6);
   }
+  
+  public boolean isDoubles() {
+    return die1 == die2;
+  }
 }

@@ -5,7 +5,8 @@ class Player {
   private String name;
   private boolean passedGo;
   private int turnCount;
-  private Token token;
+  private Token token;    
+  private int jailTurns;
   
   private int propertyCount;
 
@@ -14,7 +15,6 @@ class Player {
     this.money = startingMoney;
     this.position = 0;
     this.inJail = false;
-    this.properties = new AbstractSpace[28];
     this.propertyCount = 0;
     this.turnCount = 0;
     this.token = t;
@@ -22,7 +22,7 @@ class Player {
   
   public void incrementTurn() { 
     turnCount++; 
-  }
+  } //<>//
   
   public int getTurnCount()   { 
     return turnCount; 
@@ -39,7 +39,7 @@ class Player {
   public int getPosition() { 
     return position; 
   }
-
+  
   public void receiveMoney(int amount) { 
     money += amount; 
   }
@@ -55,7 +55,7 @@ class Player {
 
   public void goToJail() {
     position = 10;
-    inJail   = true;
+    inJail = true;
   }
   
   public void move(int steps) {
@@ -65,6 +65,22 @@ class Player {
       position -= 40;
       passedGo = true;
     }
+  }
+
+  public boolean isInJail() { 
+    return inJail; 
+  }
+  
+  public void releaseFromJail() { 
+    inJail = false; jailTurns = 0; 
+  }
+  
+  public void incrementJailTurn(){ 
+    jailTurns++; 
+  }
+  
+  public int getJailTurns(){ 
+    return jailTurns; 
   }
   
   public boolean hasPassedGo() {
