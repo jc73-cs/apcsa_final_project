@@ -4,7 +4,7 @@ class GameController {
   private Dice dice;
   private Display display;
   private int currentPlayer;
-  private float[] buyThresholds = {0.5, 0.5};
+  private float[] buyThresholds = {1,1};
   
   public GameController(Board b, Player[] players, Dice dice, Display display) {
     this.board = b;
@@ -336,9 +336,12 @@ class GameController {
 }
 
 GameController gc;
+PImage gameboard;
 
 void gameSetup() {
   Board board = new Board();
+  gameboard = loadImage(dataPath("images/monopoly.jpg"));
+  gameboard.resize(800, 0); 
   Dice dice = new Dice();
   Player[] players = new Player[] {
     new Player("Bot 1", 1500, new Token(0)),
@@ -350,6 +353,7 @@ void gameSetup() {
 
 void gameDraw() {
   background(0);
+  image(gameboard, 200, 0);
   gc.draw();
 }
 
