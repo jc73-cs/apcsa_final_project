@@ -1,4 +1,3 @@
-name,type
 Go,Go
 Mediterranean Avenue,Property
 Community Chest,CommunityChest

@@ -1,13 +1,12 @@
-class Monopoly {
-  void setup() { 
-    gameSetup(); 
-  }
+void setup() {
+  size(1200, 800);
+  gameSetup(); 
+}
   
-  void draw() { 
-    gameDraw();  
-  }
+void draw() { 
+  gameDraw();  
+}
   
-  void mousePressed() { 
-    gameMousePressed(); 
-  }
+void mousePressed() { 
+  gameMousePressed(); 
 }

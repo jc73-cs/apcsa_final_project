@@ -3,6 +3,8 @@ import java.io.File;
 
 class Board {
   private AbstractSpace[] board;
+  private Deck chanceDeck;
+  private Deck communityDeck;
 
   public Board() {
     try {
@@ -15,8 +17,8 @@ class Board {
       Scanner chanceScan = new Scanner(new File(dataPath("chance.txt")));
       Scanner communityScan = new Scanner(new File(dataPath("communitychest.txt")));
 
-      Deck chanceDeck = new Deck(chanceScan);
-      Deck communityDeck = new Deck(communityScan);
+      chanceDeck = new Deck(chanceScan);
+      communityDeck = new Deck(communityScan);
 
       int i = 0;
       while (boardScan.hasNextLine() && i < 40) {
@@ -80,5 +82,13 @@ class Board {
 
   public AbstractSpace getSpace(int index) {
     return board[((index % 40) + 40) % 40];
+  }
+  
+  public Deck getChanceDeck() {
+    return chanceDeck;
+  }
+  
+  public Deck getCommunityDeck() {
+    return communityDeck;
   }
 }

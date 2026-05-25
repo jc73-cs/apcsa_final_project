@@ -32,6 +32,10 @@ class Property extends AbstractSpace {
     return rent[houses];
   }
   
+  public int getHouses() {
+    return houses; 
+  }
+  
   public void landOn(Player p, float buyThreshold) {
     if (owner == null) {
       println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");

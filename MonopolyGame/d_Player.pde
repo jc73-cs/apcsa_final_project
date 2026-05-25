@@ -7,16 +7,14 @@ class Player {
   private int turnCount;
   private Token token;    
   private int jailTurns;
-  
-  private int propertyCount;
+  private boolean hasJailFreeCard;
 
   public Player(String name, int startingMoney, Token t) {
     this.name  = name;
     this.money = startingMoney;
     this.position = 0;
     this.inJail = false;
-    this.propertyCount = 0;
-    this.turnCount = 0;
+    this.turnCount = 1;
     this.token = t;
   }
   
@@ -38,6 +36,10 @@ class Player {
   
   public int getPosition() { 
     return position; 
+  }
+  
+  public void setPosition(int index) {
+    position = ((index % 40) + 40) % 40;
   }
   
   public void receiveMoney(int amount) { 
@@ -85,5 +87,17 @@ class Player {
   
   public boolean hasPassedGo() {
     return passedGo;
+  }
+  
+  public void giveJailFreeCard() {
+   hasJailFreeCard = true; 
+  }
+  
+  public boolean hasJailFreeCard() { 
+    return hasJailFreeCard; 
+  }
+  
+  public void useJailFreeCard() { 
+    hasJailFreeCard = false; 
   }
 }
