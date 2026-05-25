@@ -2,10 +2,7 @@ class Player {
   private int money;
   private int position;
   private boolean inJail;
-  private AbstractSpace[] properties;
   private String name;
-  private int railroads;
-  private int utilities;
   private boolean passedGo;
   private int turnCount;
   private Token token;
@@ -46,6 +43,7 @@ class Player {
   public void receiveMoney(int amount) { 
     money += amount; 
   }
+  
   public void payMoney(int amount) { 
     money -= amount; 
   }
@@ -58,21 +56,6 @@ class Player {
   public void goToJail() {
     position = 10;
     inJail   = true;
-  }
-
-  public void addRailroad() { 
-    railroads++; 
-  }
-  public void addUtility()  { 
-    utilities++;  
-  }
-  
-  public int countRailroads() { 
-    return railroads; 
-  }
-  
-  public int countUtilities() { 
-    return utilities;  
   }
   
   public void move(int steps) {

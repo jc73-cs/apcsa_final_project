@@ -4,6 +4,7 @@ class Go extends AbstractSpace {
   }
   
   public void landOn(Player p) {
-    
+    println(p.getName() + " landed on Go");
+    //handled in GameController
   }
 }

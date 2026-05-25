@@ -12,7 +12,30 @@ class Railroad extends AbstractSpace {
     this.owner = null;
   }
   
-  public void landOn(Player p) {
-    
+  public Player getOwner() {
+    return owner;
+  }
+  
+  public int calcRent(int railroadCount) {
+    return 25 * ((int) pow(2, railroadCount - 1));
+  }
+  
+  public void landOn(Player p, float buyThreshold, int railroadCount) {
+    if (owner == null) {
+      println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
+      if (cost <= p.getMoney() * buyThreshold) {
+        p.payMoney(cost);
+        owner = p;
+        println(p.getName() + " bought " + name);
+      }
+    } 
+    else if (owner != p) {
+      int due = calcRent(railroadCount);
+      p.payRent(due, owner);
+      println(p.getName() + " pays $" + due + " to " + owner.getName());
+    } 
+    else {
+      println(p.getName() + " owns " + name);
+    }
   }
 }

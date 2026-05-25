@@ -6,6 +6,7 @@ class Property extends AbstractSpace {
   private int buildingCost;
   private int mortgagePrice;
   private boolean mortgaged; 
+  private Player owner;
   
   public Property(String name,String colorGroup, int cost,int baseRent,int house1,int house2,int house3,int house4,int hotel,int buildingCost,int mortgagePrice) {
     this.name = name;
@@ -23,7 +24,30 @@ class Property extends AbstractSpace {
     this.mortgaged = false;
   }
   
-  public void landOn(Player p) {
-    
+  public Player getOwner() {
+    return owner;
+  }
+  
+  public int calcRent() {
+    return rent[houses];
+  }
+  
+  public void landOn(Player p, float buyThreshold) {
+    if (owner == null) {
+      println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
+      if (cost <= p.getMoney() * buyThreshold) {
+        p.payMoney(cost);
+        owner = p;
+        println(p.getName() + " bought " + name);
+      }
+    } 
+    else if (owner != p) {
+      int due = calcRent();
+      p.payRent(due, owner);
+      println(p.getName() + " pays $" + due + " to " + owner.getName());
+    } 
+    else {
+      println(p.getName() + " owns " + name);
+    }
   }
 }

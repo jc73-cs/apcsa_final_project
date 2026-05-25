@@ -4,6 +4,6 @@ class FreeParking extends AbstractSpace {
   }
   
   public void landOn(Player p) {
-    
+    println(p.getName() + " landed on Free Parking");
   }
 }
