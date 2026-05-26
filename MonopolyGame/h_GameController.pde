@@ -151,14 +151,17 @@ class GameController {
   private int nearestRailroad(int position) {
     int[] railroads = {5, 15, 25, 35};
     for (int r : railroads) {
-      if (position <= r) return r;
+      if (position <= r) 
+        return r;
     }
     return 5;
   }
   
   private int nearestUtility(int position) {
-    if (position <= 12) return 12;
-    if (position <= 28) return 28;    
+    if (position <= 12) 
+      return 12;
+    if (position <= 28) 
+      return 28;    
     return 12;
   }
   
@@ -186,13 +189,13 @@ class GameController {
       int nearest = nearestRailroad(p.getPosition());
       moveToSpace(p, nearest);
       Railroad r = (Railroad)board.getSpace(nearest);
-      r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()));
+      r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()) + 1);
     } 
     else if (desc.equals("Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total ten times amount thrown.")) {
       int nearest = nearestUtility(p.getPosition());
       moveToSpace(p, nearest);
       Utility u = (Utility)board.getSpace(nearest);
-      u.landOn(p, buyThresholds[currentPlayer], dice.getTotal(), countUtilities(u.getOwner()));
+      u.landOn(p, buyThresholds[currentPlayer], dice.getTotal(), 2);
     } 
     else if (desc.equals("Go to Jail. Go directly to Jail, do not pass Go, do not collect $200.")) {
       p.goToJail();
@@ -202,7 +205,9 @@ class GameController {
       p.setPosition(p.getPosition() - 3);
       println(p.getName() + " goes back 3 spaces to " + board.getSpace(p.getPosition()).getName());
       AbstractSpace landed = board.getSpace(p.getPosition());
-      if (landed instanceof Property)            { ((Property)landed).landOn(p, buyThresholds[currentPlayer]); }
+      if (landed instanceof Property) { 
+        ((Property)landed).landOn(p, buyThresholds[currentPlayer]); 
+      }
       else if (landed instanceof Railroad) {
         Railroad r = (Railroad)landed;
         r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()));
@@ -211,7 +216,9 @@ class GameController {
         Utility u = (Utility)landed;
         u.landOn(p, buyThresholds[currentPlayer], dice.getTotal(), countUtilities(u.getOwner()));
       }
-      else if (landed instanceof Tax)            { ((Tax)landed).landOn(p); }
+      else if (landed instanceof Tax) { 
+        ((Tax)landed).landOn(p); 
+      }
       else if (landed instanceof Chance) {
         Card c2 = board.getChanceDeck().drawCard();
         println(p.getName() + " draws Chance: " + c2.description);
