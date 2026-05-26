@@ -74,7 +74,8 @@ class Player {
   }
   
   public void releaseFromJail() { 
-    inJail = false; jailTurns = 0; 
+    inJail = false; 
+    jailTurns = 0; 
   }
   
   public void incrementJailTurn(){ 
