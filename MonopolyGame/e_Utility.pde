@@ -31,6 +31,7 @@ class Utility extends AbstractSpace {
       if (cost <= p.getMoney() * buyThreshold) {
         p.payMoney(cost);
         owner = p;
+        p.addAsset(this);
         println(p.getName() + " bought " + name);
       }
     } 

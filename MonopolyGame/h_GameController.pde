@@ -165,6 +165,37 @@ class GameController {
     return 12;
   }
   
+  private void buildHouses(Player p) {
+    String[] colorGroups = {"brown", "lightBlue", "magenta", "orange", "red", "yellow", "green", "blue"};
+    for (String colorGroup : colorGroups) {
+      if (p.ownsFullColorGroup(colorGroup)) {
+        buildEvenly(p, colorGroup);
+      }
+    }
+  }
+  
+  private void buildEvenly(Player p, String colorGroup) {
+    ArrayList<Property> group = p.getColorGroup(colorGroup);
+    boolean built = true;
+    while (built) {
+      built = false;
+      int minHouses = 5;
+      for (Property prop : group) {
+        minHouses = min(minHouses, prop.getHouses());
+      }
+      for (Property prop : group) {
+        if (prop.getHouses() == minHouses && prop.getHouses() < 5) {
+          if (prop.getBuildingCost() <= p.getMoney() * buyThresholds[currentPlayer]) {
+            prop.setHouses(prop.getHouses() + 1);
+            p.payMoney(prop.getBuildingCost());
+            println(p.getName() + " built a house on " + prop.getName());
+            built = true;
+          }
+        }
+      }
+    }
+  }
+  
   private void applyCard(Player p, Card c) {
     String desc = c.description;
     

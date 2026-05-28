@@ -24,6 +24,10 @@ class Property extends AbstractSpace {
     this.mortgaged = false;
   }
   
+  public String getColorGroup() {
+    return colorGroup;
+  }
+  
   public Player getOwner() {
     return owner;
   }
@@ -36,12 +40,21 @@ class Property extends AbstractSpace {
     return houses; 
   }
   
+  public int getBuildingCost() {
+     return buildingCost; 
+  }
+  
+  public void setHouses(int houses) {
+    this.houses = houses;
+  }
+  
   public void landOn(Player p, float buyThreshold) {
     if (owner == null) {
       println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
       if (cost <= p.getMoney() * buyThreshold) {
         p.payMoney(cost);
         owner = p;
+        p.addAsset(this);
         println(p.getName() + " bought " + name);
       }
     } 

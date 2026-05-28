@@ -8,6 +8,7 @@ class Player {
   private Token token;    
   private int jailTurns;
   private boolean hasJailFreeCard;
+  private ArrayList<AbstractSpace> assetsOwned;
 
   public Player(String name, int startingMoney, Token t) {
     this.name  = name;
@@ -16,6 +17,7 @@ class Player {
     this.inJail = false;
     this.turnCount = 1;
     this.token = t;
+    this.assetsOwned = new ArrayList<AbstractSpace>();
   }
   
   public void incrementTurn() { 
@@ -100,5 +102,40 @@ class Player {
   
   public void useJailFreeCard() { 
     hasJailFreeCard = false; 
+  }
+  
+  public ArrayList<AbstractSpace> getAssets() { 
+    return assetsOwned; 
+  }
+  
+  public void addAsset(AbstractSpace a) { 
+    assetsOwned.add(a); 
+  }
+  
+  public void removeAsset(AbstractSpace a) { 
+    assetsOwned.remove(a); 
+  }
+  
+  public boolean ownsFullColorGroup(String colorGroup) {
+    for (AbstractSpace space : assetsOwned) {
+      if (space instanceof Property) {
+        Property p = (Property)space;
+        if (p.getColorGroup().equals(colorGroup) && p.getOwner() != this)
+          return false;
+      }
+    }
+    return true;
+  }
+  
+  public ArrayList<Property> getColorGroup(String colorGroup) {
+  ArrayList<Property> group = new ArrayList<Property>();
+    for (AbstractSpace space : assetsOwned) {
+      if (space instanceof Property) {
+        Property p = (Property)space;
+        if (p.getColorGroup().equals(colorGroup))
+          group.add(p);
+      }
+    }
+    return group;
   }
 }
