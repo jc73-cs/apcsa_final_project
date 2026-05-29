@@ -9,21 +9,22 @@ class Board {
   public Board() {
     try {
       this.board = new AbstractSpace[40];
-
+      
       Scanner boardScan = new Scanner(new File(dataPath("board.txt")));
       Scanner propertyScan = new Scanner(new File(dataPath("properties.txt")));
       Scanner railroadScan = new Scanner(new File(dataPath("railroads.txt")));
       Scanner utilityScan = new Scanner(new File(dataPath("utilities.txt")));
       Scanner chanceScan = new Scanner(new File(dataPath("chance.txt")));
       Scanner communityScan = new Scanner(new File(dataPath("communitychest.txt")));
-
+      
       chanceDeck = new Deck(chanceScan);
       communityDeck = new Deck(communityScan);
-
+      
       int i = 0;
       while (boardScan.hasNextLine() && i < 40) {
         String line = boardScan.nextLine().trim();
-        if (line.isEmpty()) continue;
+        if (line.isEmpty()) 
+          continue;
 
         String[] parts = split(line, ',');
         String spaceName = parts[0].trim();
@@ -75,7 +76,7 @@ class Board {
       }
     }
     catch (Exception e) {
-      println("Board load error: " + e.getMessage());
+      println("Error: " + e.getMessage());
       this.board = new AbstractSpace[40];
     }
   }

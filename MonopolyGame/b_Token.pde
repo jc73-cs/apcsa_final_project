@@ -1,4 +1,3 @@
-// b_Token.pde
 class Token {
   private int boardIndex; 
   private int screenX;

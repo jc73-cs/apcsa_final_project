@@ -88,6 +88,7 @@ class GameController {
       }
     }  
     println(p.getName() + " now has $" + p.getMoney());
+    buildHouses(p);
     p.incrementTurn();
     currentPlayer = (currentPlayer + 1) % players.length;
   }
@@ -105,21 +106,25 @@ class GameController {
   }
   
   public int countRailroads(Player p) {
-    if (p == null) return 0;
+    if (p == null) 
+      return 0;
     int count = 0;
     for (int i = 0; i < 40; i++) {
       AbstractSpace space = board.getSpace(i);
-      if (space instanceof Railroad && ((Railroad)space).getOwner() == p) count++;
+      if (space instanceof Railroad && ((Railroad)space).getOwner() == p) 
+        count++;
     }
     return count;
   }
   
   public int countUtilities(Player p) {
-    if (p == null) return 0;
+    if (p == null) 
+      return 0;
     int count = 0;
     for (int i = 0; i < 40; i++) {
       AbstractSpace space = board.getSpace(i);
-      if (space instanceof Utility && ((Utility)space).getOwner() == p) count++;
+      if (space instanceof Utility && ((Utility)space).getOwner() == p)
+        count++;
     }
     return count;
   }
@@ -168,27 +173,27 @@ class GameController {
   private void buildHouses(Player p) {
     String[] colorGroups = {"brown", "lightBlue", "magenta", "orange", "red", "yellow", "green", "blue"};
     for (String colorGroup : colorGroups) {
-      if (p.ownsFullColorGroup(colorGroup)) {
-        buildEvenly(p, colorGroup);
+      if (p.ownsFullColorGroup(colorGroup, this.board)) {
+        distributeHouses(p, colorGroup);
       }
     }
   }
   
-  private void buildEvenly(Player p, String colorGroup) {
+  private void distributeHouses(Player p, String colorGroup) {
     ArrayList<Property> group = p.getColorGroup(colorGroup);
     boolean built = true;
     while (built) {
       built = false;
       int minHouses = 5;
-      for (Property prop : group) {
-        minHouses = min(minHouses, prop.getHouses());
+      for (Property property : group) {
+        minHouses = min(minHouses, property.getHouses());
       }
-      for (Property prop : group) {
-        if (prop.getHouses() == minHouses && prop.getHouses() < 5) {
-          if (prop.getBuildingCost() <= p.getMoney() * buyThresholds[currentPlayer]) {
-            prop.setHouses(prop.getHouses() + 1);
-            p.payMoney(prop.getBuildingCost());
-            println(p.getName() + " built a house on " + prop.getName());
+      for (Property property : group) {
+        if (property.getHouses() == minHouses && property.getHouses() < 5) {
+          if (property.getBuildingCost() <= p.getMoney() * buyThresholds[currentPlayer]) {
+            property.setHouses(property.getHouses() + 1);
+            p.payMoney(property.getBuildingCost());
+            println(p.getName() + " built a house on " + property.getName());
             built = true;
           }
         }
@@ -197,42 +202,47 @@ class GameController {
   }
   
   private void applyCard(Player p, Card c) {
-    String desc = c.description;
+    String d = c.description;
     
-    if (desc.equals("Advance to Boardwalk.")) {
-      moveToSpace(p, 39);      
+    if (d.equals("Advance to Boardwalk.")) {
+      moveToSpace(p, 39);
+      ((Property)board.getSpace(39)).landOn(p, buyThresholds[currentPlayer]);
     } 
-    else if (desc.equals("Advance to Go (Collect $200).")) {
+    else if (d.equals("Advance to Go (Collect $200).")) {
       p.setPosition(0);
       p.receiveMoney(200);
       println(p.getName() + " advances to Go, collects $200");  
     } 
-    else if (desc.equals("Advance to Illinois Avenue. If you pass Go, collect $200.")) {
+    else if (d.equals("Advance to Illinois Avenue. If you pass Go, collect $200.")) {
       moveToSpace(p, 24);  
+      ((Property)board.getSpace(24)).landOn(p, buyThresholds[currentPlayer]);
     } 
-    else if (desc.equals("Advance to St. Charles Place. If you pass Go, collect $200.")) {
+    else if (d.equals("Advance to St. Charles Place. If you pass Go, collect $200.")) {
       moveToSpace(p, 11);  
+      ((Property)board.getSpace(11)).landOn(p, buyThresholds[currentPlayer]);
     } 
-    else if (desc.equals("Take a trip to Reading Railroad. If you pass Go, collect $200.")) {
+    else if (d.equals("Take a trip to Reading Railroad. If you pass Go, collect $200.")) {
       moveToSpace(p, 5); 
+      Railroad r = (Railroad)board.getSpace(5);
+      r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()));
     } 
-    else if (desc.equals("Advance to the nearest Railroad. If unowned, you may buy it from the Bank. If owned, pay owner twice the rental to which they are otherwise entitled.")) {
+    else if (d.equals("Advance to the nearest Railroad. If unowned, you may buy it from the Bank. If owned, pay owner twice the rental to which they are otherwise entitled.")) {
       int nearest = nearestRailroad(p.getPosition());
       moveToSpace(p, nearest);
       Railroad r = (Railroad)board.getSpace(nearest);
       r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()) + 1);
     } 
-    else if (desc.equals("Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total ten times amount thrown.")) {
+    else if (d.equals("Advance token to nearest Utility. If unowned, you may buy it from the Bank. If owned, throw dice and pay owner a total ten times amount thrown.")) {
       int nearest = nearestUtility(p.getPosition());
       moveToSpace(p, nearest);
       Utility u = (Utility)board.getSpace(nearest);
       u.landOn(p, buyThresholds[currentPlayer], dice.getTotal(), 2);
     } 
-    else if (desc.equals("Go to Jail. Go directly to Jail, do not pass Go, do not collect $200.")) {
+    else if (d.equals("Go to Jail. Go directly to Jail, do not pass Go, do not collect $200.")) {
       p.goToJail();
       println(p.getName() + " is sent to Jail!");  
     } 
-    else if (desc.equals("Go Back 3 Spaces.")) {
+    else if (d.equals("Go Back 3 Spaces.")) {
       p.setPosition(p.getPosition() - 3);
       println(p.getName() + " goes back 3 spaces to " + board.getSpace(p.getPosition()).getName());
       AbstractSpace landed = board.getSpace(p.getPosition());
@@ -261,77 +271,77 @@ class GameController {
         applyCard(p, c2);
       }
     } 
-    else if (desc.equals("Get Out of Jail Free.")) {
+    else if (d.equals("Get Out of Jail Free.")) {
       p.giveJailFreeCard();
       println(p.getName() + " receives Get Out of Jail Free card");
     } 
-    else if (desc.equals("Bank pays you dividend of $50.")) {
+    else if (d.equals("Bank pays you dividend of $50.")) {
       p.receiveMoney(50);
       println(p.getName() + " collects $50 dividend");
     } 
-    else if (desc.equals("Your building loan matures. Collect $150.")) {
+    else if (d.equals("Your building loan matures. Collect $150.")) {
       p.receiveMoney(150);
       println(p.getName() + " collects $150 building loan");
     } 
-    else if (desc.equals("Bank error in your favor. Collect $200.")) {
+    else if (d.equals("Bank error in your favor. Collect $200.")) {
       p.receiveMoney(200);
       println(p.getName() + " collects $200 bank error");
     } 
-    else if (desc.equals("Holiday fund matures. Receive $100.")) {
+    else if (d.equals("Holiday fund matures. Receive $100.")) {
       p.receiveMoney(100);
       println(p.getName() + " collects $100 holiday fund");
     } 
-    else if (desc.equals("Life insurance matures. Collect $100.")) {
+    else if (d.equals("Life insurance matures. Collect $100.")) {
       p.receiveMoney(100);
       println(p.getName() + " collects $100 life insurance");
     } 
-    else if (desc.equals("Income tax refund. Collect $20.")) {
+    else if (d.equals("Income tax refund. Collect $20.")) {
       p.receiveMoney(20);
       println(p.getName() + " collects $20 tax refund");
     } 
-    else if (desc.equals("Receive $25 consultancy fee.")) {
+    else if (d.equals("Receive $25 consultancy fee.")) {
       p.receiveMoney(25);
       println(p.getName() + " collects $25 consultancy fee"); 
     } 
-    else if (desc.equals("You have won second prize in a beauty contest. Collect $10.")) {
+    else if (d.equals("You have won second prize in a beauty contest. Collect $10.")) {
       p.receiveMoney(10);
       println(p.getName() + " collects $10 beauty contest");
     } 
-    else if (desc.equals("You inherit $100.")) {
+    else if (d.equals("You inherit $100.")) {
       p.receiveMoney(100);
       println(p.getName() + " collects $100 inheritance");
     } 
-    else if (desc.equals("From sale of stock you get $50.")) {
+    else if (d.equals("From sale of stock you get $50.")) {
       p.receiveMoney(50);
       println(p.getName() + " collects $50 stock sale");  
     } 
-    else if (desc.equals("Doctor's fee. Pay $50.")) {
+    else if (d.equals("Doctor's fee. Pay $50.")) {
       p.payMoney(50);
       println(p.getName() + " pays $50 doctor's fee"); 
     } 
-    else if (desc.equals("Pay hospital fees of $100.")) {
+    else if (d.equals("Pay hospital fees of $100.")) {
       p.payMoney(100);
       println(p.getName() + " pays $100 hospital fee");
     } 
-    else if (desc.equals("Pay school fees of $50.")) {
+    else if (d.equals("Pay school fees of $50.")) {
       p.payMoney(50);
       println(p.getName() + " pays $50 school fee");
     } 
-    else if (desc.equals("Speeding fine $15.")) {
+    else if (d.equals("Speeding fine $15.")) {
       p.payMoney(15);
       println(p.getName() + " pays $15 speeding fine");
     } 
-    else if (desc.equals("Make general repairs on all your property. For each house pay $25. For each hotel pay $100.")) {
+    else if (d.equals("Make general repairs on all your property. For each house pay $25. For each hotel pay $100.")) {
       int due = countBuildings(p, false) * 25 + countBuildings(p, true) * 100;
       p.payMoney(due);
       println(p.getName() + " pays $" + due + " for repairs"); 
     } 
-    else if (desc.equals("You are assessed for street repair. $40 per house. $115 per hotel.")) {
+    else if (d.equals("You are assessed for street repair. $40 per house. $115 per hotel.")) {
       int due = countBuildings(p, false) * 40 + countBuildings(p, true) * 115;
       p.payMoney(due);
       println(p.getName() + " pays $" + due + " for street repair"); 
     } 
-    else if (desc.equals("You have been elected Chairman of the  Board. Pay each player $50.")) {
+    else if (d.equals("You have been elected Chairman of the  Board. Pay each player $50.")) {
       for (Player other : players) {
         if (other != p) {
           p.payRent(50, other);
@@ -339,7 +349,7 @@ class GameController {
         }
       }
     } 
-    else if (desc.equals("It is your birthday. Collect $10 from every player.")) {
+    else if (d.equals("It is your birthday. Collect $10 from every player.")) {
       for (Player other : players) {
         if (other != p) {
           other.payRent(10, p);
@@ -348,7 +358,7 @@ class GameController {
       }
     } 
     else {
-      println("Unhandled card: " + desc);
+      println("Card not found: " + d);
     }
   }
 
@@ -385,7 +395,7 @@ void gameSetup() {
     new Player("Bot 1", 1500, new Token(0)),
     new Player("Bot 2", 1500, new Token(1))
   };
-  Display display  = new Display(board, players, dice);
+  Display display = new Display(board, players, dice);
   gc = new GameController(board, players, dice, display);
 }
 
@@ -400,7 +410,6 @@ void gameMousePressed() {
     gc.advanceTurn();
   } else {
     println("Game over!");
-    // print winner
     for (Player p : gc.getPlayers()) {
       println(p.getName() + " finished with $" + p.getMoney());
     }

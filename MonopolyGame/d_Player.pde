@@ -116,8 +116,9 @@ class Player {
     assetsOwned.remove(a); 
   }
   
-  public boolean ownsFullColorGroup(String colorGroup) {
-    for (AbstractSpace space : assetsOwned) {
+  public boolean ownsFullColorGroup(String colorGroup, Board board) {
+    for (int i = 0; i < 40; i++) {
+      AbstractSpace space = board.getSpace(i);
       if (space instanceof Property) {
         Property p = (Property)space;
         if (p.getColorGroup().equals(colorGroup) && p.getOwner() != this)

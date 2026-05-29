@@ -12,7 +12,8 @@ class Deck {
   }
 
   public Card drawCard() {
-    if (cards.isEmpty()) java.util.Collections.shuffle(cards);
+    if (cards.isEmpty()) 
+      java.util.Collections.shuffle(cards);
     Card c = cards.get(0);
     cards.remove(0);
     cards.add(c);

@@ -4,9 +4,9 @@ class Display {
   private Dice dice;
 
   public Display(Board board, Player[] players, Dice dice) {
-    this.board   = board;
+    this.board = board;
     this.players = players;
-    this.dice    = dice;
+    this.dice = dice;
   }
 
   public void drawBoard() {}
