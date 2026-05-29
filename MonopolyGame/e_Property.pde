@@ -24,6 +24,14 @@ class Property extends AbstractSpace {
     this.mortgaged = false;
   }
   
+  public boolean isMortgaged() {
+    return mortgaged; 
+  }
+  
+  public void setMortgaged(boolean mortgaged) {
+    this.mortgaged = mortgaged; 
+  }
+  
   public String getColorGroup() {
     return colorGroup;
   }
@@ -46,6 +54,10 @@ class Property extends AbstractSpace {
   
   public void setHouses(int houses) {
     this.houses = houses;
+  }
+  
+  public int getMortgagePrice() {
+    return this.mortgagePrice; 
   }
   
   public void landOn(Player p, float buyThreshold) {

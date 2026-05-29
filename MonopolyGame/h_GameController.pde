@@ -95,7 +95,7 @@ class GameController {
   
   public boolean checkWin() {
    for(Player p: players) {
-      if(p.getMoney() == 0)
+      if(p.getMoney() <= 0)
         return true;
    }
    return false;
@@ -361,6 +361,31 @@ class GameController {
       println("Card not found: " + d);
     }
   }
+  
+  private void unmortgageProperties(Player p) {
+  for (AbstractSpace space : p.getAssets()) {
+    if (space instanceof Property) {
+      Property property = (Property)space;
+      if (property.isMortgaged()) {
+        int unmortgageCost = (int)(property.getMortgagePrice() * 1.1);
+        if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
+          property.setMortgaged(false);
+          p.payMoney(unmortgageCost);
+          println(p.getName() + " unmortgaged " + property.getName() + " for $" + unmortgageCost);
+        }
+      }
+    }
+    else if (space instanceof Railroad) {
+      Railroad r = (Railroad)space;
+      if (r.isMortgaged()) {
+        int unmortgageCost = (int)(r.getMortgagePrice() * 1.1);
+        if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
+          r.setMortgaged(false);
+          p.payMoney(unmortgageCost);
+          println(p.getName() + " unmortgaged " + r.getName() + " for $" + unmortgageCost);
+        }
+      }
+    }
 
   public void mousePressed() {
     if(checkWin() == false) {
