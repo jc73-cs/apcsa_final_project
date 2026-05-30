@@ -89,6 +89,7 @@ class GameController {
     }  
     println(p.getName() + " now has $" + p.getMoney());
     buildHouses(p);
+    unmortgage(p);
     p.incrementTurn();
     currentPlayer = (currentPlayer + 1) % players.length;
   }
@@ -362,30 +363,160 @@ class GameController {
     }
   }
   
-  private void unmortgageProperties(Player p) {
-  for (AbstractSpace space : p.getAssets()) {
-    if (space instanceof Property) {
-      Property property = (Property)space;
-      if (property.isMortgaged()) {
-        int unmortgageCost = (int)(property.getMortgagePrice() * 1.1);
-        if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
-          property.setMortgaged(false);
-          p.payMoney(unmortgageCost);
-          println(p.getName() + " unmortgaged " + property.getName() + " for $" + unmortgageCost);
+  private void unmortgage(Player p) {
+    for (AbstractSpace space : p.getAssets()) {
+      if (space instanceof Property) {
+        Property property = (Property)space;
+        if (property.isMortgaged()) {
+          int unmortgageCost = (int)(property.getMortgagePrice() * 1.1);
+          if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
+            property.setMortgaged(false);
+            p.payMoney(unmortgageCost);
+            println(p.getName() + " unmortgaged " + property.getName() + " for $" + unmortgageCost);
+          }
+        }
+      }
+      else if (space instanceof Railroad) {
+        Railroad r = (Railroad)space;
+        if (r.isMortgaged()) {
+          int unmortgageCost = (int)(r.getMortgagePrice() * 1.1);
+          if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
+            r.setMortgaged(false);
+            p.payMoney(unmortgageCost);
+            println(p.getName() + " unmortgaged " + r.getName() + " for $" + unmortgageCost);
+          }
+        }
+      }
+      else if (space instanceof Utility) {
+        Utility u = (Utility)space;
+        if (u.isMortgaged()) {
+          int unmortgageCost = (int)(u.getMortgagePrice() * 1.1);
+          if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
+            u.setMortgaged(false);
+            p.payMoney(unmortgageCost);
+            println(p.getName() + " unmortgaged " + u.getName() + " for $" + unmortgageCost);
+          }
         }
       }
     }
-    else if (space instanceof Railroad) {
-      Railroad r = (Railroad)space;
-      if (r.isMortgaged()) {
-        int unmortgageCost = (int)(r.getMortgagePrice() * 1.1);
-        if (unmortgageCost <= p.getMoney() * buyThresholds[currentPlayer]) {
-          r.setMortgaged(false);
-          p.payMoney(unmortgageCost);
-          println(p.getName() + " unmortgaged " + r.getName() + " for $" + unmortgageCost);
+  }
+  
+  private void mortgageToCover(Player p, int amount) {
+    mortgageRailroadsUtilities(p, amount);
+    if (p.getMoney() < amount) 
+      mortgageIncompleteProperties(p, amount);
+    if (p.getMoney() < amount) 
+      sellHousesCheap(p, amount);
+    if (p.getMoney() < amount) 
+      mortgagePropertiesCheap(p, amount);
+    if (p.getMoney() < amount) 
+      sellHousesExpensive(p, amount);
+  }
+  
+  private void mortgageRailroadsUtilities(Player p, int amount) {
+    for (AbstractSpace space : p.getAssets()) {
+      if (p.getMoney() >= amount) break;
+      if (space instanceof Railroad) {
+        Railroad r = (Railroad)space;
+        if (!r.isMortgaged()) {
+          r.setMortgaged(true);
+          p.receiveMoney(r.getMortgagePrice());
+          println(p.getName() + " mortgaged " + r.getName() + " for $" + r.getMortgagePrice());
+        }
+      } else if (space instanceof Utility) {
+        Utility u = (Utility)space;
+        if (!u.isMortgaged()) {
+          u.setMortgaged(true);
+          p.receiveMoney(u.getMortgagePrice());
+          println(p.getName() + " mortgaged " + u.getName() + " for $" + u.getMortgagePrice());
         }
       }
     }
+  }
+  
+  private void mortgageIncompleteProperties(Player p, int amount) {
+    for (AbstractSpace space : p.getAssets()) {
+      if (p.getMoney() >= amount) break;
+      if (space instanceof Property) {
+        Property property = (Property)space;
+        if (!property.isMortgaged() && property.getHouses() == 0 && !p.ownsFullColorGroup(property.getColorGroup(), board)) {
+          property.setMortgaged(true);
+          p.receiveMoney(property.getMortgagePrice());
+          println(p.getName() + " mortgaged " + property.getName() + " for $" + property.getMortgagePrice());
+        }
+      }
+    }
+  }
+  
+  private void sellHousesCheap(Player p, int amount) {
+    String[] colorGroups = {"brown", "lightBlue", "magenta", "orange", "red", "yellow", "green", "blue"};
+    for (String colorGroup : colorGroups) {
+      if (p.getMoney() >= amount) break;
+      if (p.ownsFullColorGroup(colorGroup, board)) {
+        ArrayList<Property> group = p.getColorGroup(colorGroup);
+        boolean sold = true;
+        while (sold && p.getMoney() < amount) {
+          sold = false;
+          int maxHouses = 0;
+          for (Property property : group) {
+            maxHouses = max(maxHouses, property.getHouses());
+          }
+          for (Property property : group) {
+            if (property.getHouses() == maxHouses && property.getHouses() > 0) {
+              property.setHouses(property.getHouses() - 1);
+              p.receiveMoney(property.getBuildingCost() / 2);
+              println(p.getName() + " sold a house on " + property.getName());
+              sold = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  private void mortgagePropertiesCheap(Player p, int amount) {
+    String[] colorGroups = {"brown", "lightBlue", "magenta", "orange", "red", "yellow", "green", "blue"};
+    for (String colorGroup : colorGroups) {
+      if (p.getMoney() >= amount) break;
+      ArrayList<Property> group = p.getColorGroup(colorGroup);
+      for (Property property : group) {
+        if (p.getMoney() >= amount) break;
+        if (!property.isMortgaged() && property.getHouses() == 0) {
+          property.setMortgaged(true);
+          p.receiveMoney(property.getMortgagePrice());
+          println(p.getName() + " mortgaged " + property.getName() + " for $" + property.getMortgagePrice());
+        }
+      }
+    }
+  }
+  
+  private void sellHousesExpensive(Player p, int amount) {
+    String[] colorGroups = {"blue", "green", "yellow", "red", "orange", "magenta", "lightBlue", "brown"};
+    for (String colorGroup : colorGroups) {
+      if (p.getMoney() >= amount) break;
+      if (p.ownsFullColorGroup(colorGroup, board)) {
+        ArrayList<Property> group = p.getColorGroup(colorGroup);
+        boolean sold = true;
+        while (sold && p.getMoney() < amount) {
+          sold = false;
+          int maxHouses = 0;
+          for (Property property : group) {
+            maxHouses = max(maxHouses, property.getHouses());
+          }
+          for (Property property : group) {
+            if (property.getHouses() == maxHouses && property.getHouses() > 0) {
+              property.setHouses(property.getHouses() - 1);
+              p.receiveMoney(property.getBuildingCost() / 2);
+              println(p.getName() + " sold a house on " + property.getName());
+              sold = true;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
 
   public void mousePressed() {
     if(checkWin() == false) {

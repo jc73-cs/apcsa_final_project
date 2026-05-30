@@ -12,6 +12,18 @@ class Railroad extends AbstractSpace {
     this.owner = null;
   }
   
+  public boolean isMortgaged() {
+    return mortgaged;
+  }
+  
+  public void setMortgaged(boolean mortgaged) {
+    this.mortgaged = mortgaged;
+  }
+  
+  public int getMortgagePrice() {
+    return mortgagePrice;
+  }
+  
   public Player getOwner() {
     return owner;
   }

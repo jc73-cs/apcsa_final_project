@@ -25,6 +25,18 @@ class Utility extends AbstractSpace {
       return 10 * diceTotal;
   }
   
+  public boolean isMortgaged() {
+    return mortgaged;
+  }
+  
+  public void setMortgaged(boolean mortgaged) {
+    this.mortgaged = mortgaged;
+  }
+  
+  public int getMortgagePrice() {
+    return mortgagePrice;
+  }
+  
   public void landOn(Player p, float buyThreshold, int diceTotal, int utilityCount) {
     if (owner == null) {
       println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
