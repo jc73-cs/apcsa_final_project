@@ -1,9 +1,9 @@
 class Display {
   private Board board;
-  private Player[] players;
+  private ArrayList<Player> players;
   private Dice dice;
 
-  public Display(Board board, Player[] players, Dice dice) {
+  public Display(Board board, ArrayList<Player> players, Dice dice) {
     this.board = board;
     this.players = players;
     this.dice = dice;

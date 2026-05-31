@@ -60,6 +60,10 @@ class Property extends AbstractSpace {
     return this.mortgagePrice; 
   }
   
+  public void setOwner(Player p) {
+    this.owner = p;
+  }
+  
   public void landOn(Player p, float buyThreshold) {
     if (owner == null) {
       println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
@@ -70,12 +74,10 @@ class Property extends AbstractSpace {
         println(p.getName() + " bought " + name);
       }
     } 
-    else if (owner != p) {
-      int due = calcRent();
-      p.payRent(due, owner);
-      println(p.getName() + " pays $" + due + " to " + owner.getName());
+    else if (owner != p && !mortgaged) {
+      println(p.getName() + " owes $" + calcRent() + " to " + owner.getName());
     } 
-    else {
+    else if (owner == p) {
       println(p.getName() + " owns " + name);
     }
   }

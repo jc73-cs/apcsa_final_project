@@ -1,12 +1,12 @@
 class GameController {
-  private Player[] players;
+  private ArrayList<Player> players;
   private Board board;
   private Dice dice;
   private Display display;
   private int currentPlayer;
   private float[] buyThresholds = {1,1};
   
-  public GameController(Board b, Player[] players, Dice dice, Display display) {
+  public GameController(Board b, ArrayList<Player> players, Dice dice, Display display) {
     this.board = b;
     this.players = players;
     this.dice = dice;
@@ -15,13 +15,13 @@ class GameController {
   }
   
   public void advanceTurn() {
-    Player p = players[currentPlayer];
+  Player p = players.get(currentPlayer);
     println("--- Turn " + p.getTurnCount() + " | " + p.getName() + " ---"); 
     boolean tookTurn = true;
     if (p.isInJail()) {
       if (p.hasJailFreeCard()) {
         p.useJailFreeCard();
-        p.releaseFromJail();
+        p.leaveJail();
         println(p.getName() + " used Get Out of Jail Free card");
         rollDice();
         println("Rolled: " + dice.getDie1() + " + " + dice.getDie2() + " = " + dice.getTotal());
@@ -32,15 +32,15 @@ class GameController {
         rollDice();
         println("Rolled: " + dice.getDie1() + " + " + dice.getDie2() + " = " + dice.getTotal());
         if (dice.isDoubles()) {
-          p.releaseFromJail();
+          p.leaveJail();
           p.move(dice.getTotal());
           println(p.getName() + " rolled doubles, released from jail");
         } 
         else {
           p.incrementJailTurn();
           if (p.getJailTurns() >= 3) {
-            p.payMoney(50);
-            p.releaseFromJail();
+            handlePayment(p, 50, null);
+            p.leaveJail();
             p.move(dice.getTotal());
             println(p.getName() + " paid $50 fine, released from jail");
           } 
@@ -60,18 +60,34 @@ class GameController {
     if (tookTurn) {
       println("Moved to: " + board.getSpace(p.getPosition()).getName());
       AbstractSpace landed = board.getSpace(p.getPosition());
-      if (landed instanceof Property)            { ((Property)landed).landOn(p, buyThresholds[currentPlayer]); }
+      if (landed instanceof Property) {
+        Property property = (Property)landed;
+        property.landOn(p, buyThresholds[currentPlayer]);
+        if (property.getOwner() != null && property.getOwner() != p && !property.isMortgaged())
+          handlePayment(p, property.calcRent(), property.getOwner());
+      } 
       else if (landed instanceof Railroad) {
         Railroad r = (Railroad)landed;
         r.landOn(p, buyThresholds[currentPlayer], countRailroads(r.getOwner()));
-      }
+        if (r.getOwner() != null && r.getOwner() != p && !r.isMortgaged())
+          handlePayment(p, r.calcRent(countRailroads(r.getOwner())), r.getOwner());
+      } 
       else if (landed instanceof Utility) {
         Utility u = (Utility)landed;
         u.landOn(p, buyThresholds[currentPlayer], dice.getTotal(), countUtilities(u.getOwner()));
+        if (u.getOwner() != null && u.getOwner() != p && !u.isMortgaged())
+          handlePayment(p, u.calcRent(dice.getTotal(), countUtilities(u.getOwner())), u.getOwner());
       }
-      else if (landed instanceof Go) { ((Go)landed).landOn(p); }
-      else if (landed instanceof GoToJail) { ((GoToJail)landed).landOn(p); }
-      else if (landed instanceof Tax) { ((Tax)landed).landOn(p); }
+      else if (landed instanceof Go) { 
+        ((Go)landed).landOn(p); 
+      }
+      else if (landed instanceof GoToJail) { 
+        ((GoToJail)landed).landOn(p); 
+      }
+      else if (landed instanceof Tax) {
+        ((Tax)landed).landOn(p);
+        handlePayment(p, ((Tax)landed).getAmount(), null);
+      }
       else if (landed instanceof Chance) {
         Card c2 = board.getChanceDeck().drawCard();
         println(p.getName() + " draws Chance: " + c2.description);
@@ -91,15 +107,17 @@ class GameController {
     buildHouses(p);
     unmortgage(p);
     p.incrementTurn();
-    currentPlayer = (currentPlayer + 1) % players.length;
+    currentPlayer = (currentPlayer + 1) % players.size();
   }
   
   public boolean checkWin() {
-   for(Player p: players) {
-      if(p.getMoney() <= 0)
-        return true;
-   }
-   return false;
+    if (players.size() == 1) {
+      Player winner = players.get(0);
+      println(players.get(0).getName() + " wins!");
+      println("Final net worth: $" + calcNetWorth(winner));
+      return true;
+    }
+    return false;
   }
   
   public void rollDice() {
@@ -317,35 +335,37 @@ class GameController {
       println(p.getName() + " collects $50 stock sale");  
     } 
     else if (d.equals("Doctor's fee. Pay $50.")) {
-      p.payMoney(50);
+      handlePayment(p, 50, null);
       println(p.getName() + " pays $50 doctor's fee"); 
     } 
     else if (d.equals("Pay hospital fees of $100.")) {
-      p.payMoney(100);
+      handlePayment(p, 100, null);
       println(p.getName() + " pays $100 hospital fee");
     } 
     else if (d.equals("Pay school fees of $50.")) {
-      p.payMoney(50);
+      handlePayment(p, 50, null);
       println(p.getName() + " pays $50 school fee");
     } 
     else if (d.equals("Speeding fine $15.")) {
-      p.payMoney(15);
+      handlePayment(p, 15, null);
       println(p.getName() + " pays $15 speeding fine");
     } 
     else if (d.equals("Make general repairs on all your property. For each house pay $25. For each hotel pay $100.")) {
       int due = countBuildings(p, false) * 25 + countBuildings(p, true) * 100;
-      p.payMoney(due);
+      handlePayment(p, countBuildings(p, false) * 25 + countBuildings(p, true) * 100, null);
+      handlePayment(p, countBuildings(p, false) * 40 + countBuildings(p, true) * 115, null);
       println(p.getName() + " pays $" + due + " for repairs"); 
     } 
     else if (d.equals("You are assessed for street repair. $40 per house. $115 per hotel.")) {
       int due = countBuildings(p, false) * 40 + countBuildings(p, true) * 115;
-      p.payMoney(due);
+      handlePayment(p, countBuildings(p, false) * 25 + countBuildings(p, true) * 100, null);
+      handlePayment(p, countBuildings(p, false) * 40 + countBuildings(p, true) * 115, null);
       println(p.getName() + " pays $" + due + " for street repair"); 
     } 
     else if (d.equals("You have been elected Chairman of the  Board. Pay each player $50.")) {
       for (Player other : players) {
         if (other != p) {
-          p.payRent(50, other);
+          handlePayment(p, 50, other);
           println(p.getName() + " pays $50 to " + other.getName());
         }
       }
@@ -353,7 +373,7 @@ class GameController {
     else if (d.equals("It is your birthday. Collect $10 from every player.")) {
       for (Player other : players) {
         if (other != p) {
-          other.payRent(10, p);
+          handlePayment(other, 10, p);
           println(other.getName() + " pays $10 to " + p.getName());
         }
       }
@@ -415,7 +435,8 @@ class GameController {
   
   private void mortgageRailroadsUtilities(Player p, int amount) {
     for (AbstractSpace space : p.getAssets()) {
-      if (p.getMoney() >= amount) break;
+      if (p.getMoney() >= amount) 
+        break;
       if (space instanceof Railroad) {
         Railroad r = (Railroad)space;
         if (!r.isMortgaged()) {
@@ -423,7 +444,8 @@ class GameController {
           p.receiveMoney(r.getMortgagePrice());
           println(p.getName() + " mortgaged " + r.getName() + " for $" + r.getMortgagePrice());
         }
-      } else if (space instanceof Utility) {
+      } 
+      else if (space instanceof Utility) {
         Utility u = (Utility)space;
         if (!u.isMortgaged()) {
           u.setMortgaged(true);
@@ -436,7 +458,8 @@ class GameController {
   
   private void mortgageIncompleteProperties(Player p, int amount) {
     for (AbstractSpace space : p.getAssets()) {
-      if (p.getMoney() >= amount) break;
+      if (p.getMoney() >= amount) 
+        break;
       if (space instanceof Property) {
         Property property = (Property)space;
         if (!property.isMortgaged() && property.getHouses() == 0 && !p.ownsFullColorGroup(property.getColorGroup(), board)) {
@@ -451,7 +474,8 @@ class GameController {
   private void sellHousesCheap(Player p, int amount) {
     String[] colorGroups = {"brown", "lightBlue", "magenta", "orange", "red", "yellow", "green", "blue"};
     for (String colorGroup : colorGroups) {
-      if (p.getMoney() >= amount) break;
+      if (p.getMoney() >= amount) 
+        break;
       if (p.ownsFullColorGroup(colorGroup, board)) {
         ArrayList<Property> group = p.getColorGroup(colorGroup);
         boolean sold = true;
@@ -517,6 +541,79 @@ class GameController {
       }
     }
   }
+  
+  private void handlePayment(Player p, int amount, Player creditor) {
+    if (p.getMoney() < amount) {
+      mortgageToCover(p, amount);
+    }
+    if (p.getMoney() >= amount) {
+      p.payMoney(amount);
+      if (creditor != null) creditor.receiveMoney(amount);
+    } else {
+      handleBankruptcy(p, creditor);
+    }
+  }
+  
+  private void handleBankruptcy(Player p, Player p2) {
+    println(p.getName() + " is bankrupt!");
+    for (AbstractSpace space : p.getAssets()) {
+      if (space instanceof Property) {
+        Property property = (Property)space;
+        property.setOwner(p2);
+        if (p2 != null) 
+          p2.addAsset(property);
+        property.setHouses(0);
+      } 
+      else if (space instanceof Railroad) {
+        Railroad r = (Railroad)space;
+        r.setOwner(p2);
+        if (p2 != null) 
+          p2.addAsset(r);
+      } 
+      else if (space instanceof Utility) {
+        Utility u = (Utility)space;
+        u.setOwner(p2);
+        if (p2 != null) p2.addAsset(u);
+      }
+      if (p2 == null) {
+        if (space instanceof Property)  { 
+          ((Property)space).setOwner(null); 
+        }
+        else if (space instanceof Railroad) { 
+          ((Railroad)space).setOwner(null); 
+        }
+        else if (space instanceof Utility)  { 
+          ((Utility)space).setOwner(null); 
+        }
+      }
+    }
+    if (p2 != null) {
+      p2.receiveMoney(p.getMoney());
+    }
+    p.setMoney(0);
+    players.remove(p);
+    if (currentPlayer >= players.size()) {
+      currentPlayer = 0;
+    }
+  }
+  
+  private int calcNetWorth(Player p) {
+    int total = p.getMoney();
+    for (AbstractSpace space : p.getAssets()) {
+      if (space instanceof Property) {
+        Property prop = (Property)space;
+        total += prop.getMortgagePrice();
+        total += prop.getHouses() * (prop.getBuildingCost() / 2);
+      } else if (space instanceof Railroad) {
+        Railroad r = (Railroad)space;
+        total += r.getMortgagePrice();
+      } else if (space instanceof Utility) {
+        Utility u = (Utility)space;
+        total += u.getMortgagePrice();
+      }
+    }
+    return total;
+  }
 
   public void mousePressed() {
     if(checkWin() == false) {
@@ -534,12 +631,12 @@ class GameController {
     display.drawLog();
   }
   
-  public Player[] getPlayers() { 
+  public ArrayList<Player> getPlayers() { 
     return players; 
   }
 }
 
-GameController gc;
+GameController gameControl;
 PImage gameboard;
 
 void gameSetup() {
@@ -547,26 +644,26 @@ void gameSetup() {
   gameboard = loadImage(dataPath("images/monopoly.jpg"));
   gameboard.resize(800, 0); 
   Dice dice = new Dice();
-  Player[] players = new Player[] {
-    new Player("Bot 1", 1500, new Token(0)),
-    new Player("Bot 2", 1500, new Token(1))
-  };
+  ArrayList<Player> players = new ArrayList<Player>();
+  players.add(new Player("Bot 1", 1500, new Token(0)));
+  players.add(new Player("Bot 2", 1500, new Token(1)));
   Display display = new Display(board, players, dice);
-  gc = new GameController(board, players, dice, display);
+  gameControl = new GameController(board, players, dice, display);
+
 }
 
 void gameDraw() {
   background(0);
   image(gameboard, 200, 0);
-  gc.draw();
+  gameControl.draw();
 }
 
 void gameMousePressed() {
-  if (!gc.checkWin()) {
-    gc.advanceTurn();
+  if (!gameControl.checkWin()) {
+    gameControl.advanceTurn();
   } else {
     println("Game over!");
-    for (Player p : gc.getPlayers()) {
+    for (Player p : gameControl.getPlayers()) {
       println(p.getName() + " finished with $" + p.getMoney());
     }
   }

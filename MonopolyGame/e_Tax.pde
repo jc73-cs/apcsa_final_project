@@ -5,10 +5,12 @@ class Tax extends AbstractSpace {
     this.name = name;
     this.amount = amount;
   }
+  
+  public int getAmount() {
+    return amount; 
+  }
 
   public void landOn(Player p) {
-    p.payMoney(amount);
-    println(p.getName() + " paid $" + amount + " for " + name);
-    println(p.getName() + " now has $" + p.getMoney());
+    println(p.getName() + " paid $" + amount + " for " + name);  
   }
 }

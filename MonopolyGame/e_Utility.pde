@@ -37,6 +37,10 @@ class Utility extends AbstractSpace {
     return mortgagePrice;
   }
   
+  public void setOwner(Player p) {
+    this.owner = p;
+  }
+  
   public void landOn(Player p, float buyThreshold, int diceTotal, int utilityCount) {
     if (owner == null) {
       println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
@@ -46,13 +50,9 @@ class Utility extends AbstractSpace {
         p.addAsset(this);
         println(p.getName() + " bought " + name);
       }
-    } 
-    else if (owner != p) {
-      int due = calcRent(diceTotal, utilityCount);
-      p.payRent(due, owner);
-      println(p.getName() + " pays $" + due + " to " + owner.getName());
-    } 
-    else {
+    } else if (owner != p && !mortgaged) {
+      println(p.getName() + " owes $" + calcRent(diceTotal, utilityCount) + " to " + owner.getName());
+    } else if (owner == p) {
       println(p.getName() + " owns " + name);
     }
   }

@@ -32,6 +32,10 @@ class Railroad extends AbstractSpace {
     return 25 * ((int) pow(2, railroadCount - 1));
   }
   
+  public void setOwner(Player p) {
+    this.owner = p;
+  }
+  
   public void landOn(Player p, float buyThreshold, int railroadCount) {
     if (owner == null) {
       println(p.getName() + " landed on unowned " + name + " ($" + cost + ")");
@@ -41,13 +45,9 @@ class Railroad extends AbstractSpace {
         p.addAsset(this);
         println(p.getName() + " bought " + name);
       }
-    } 
-    else if (owner != p) {
-      int due = calcRent(railroadCount);
-      p.payRent(due, owner);
-      println(p.getName() + " pays $" + due + " to " + owner.getName());
-    } 
-    else {
+    } else if (owner != p && !mortgaged) {
+      println(p.getName() + " owes $" + calcRent(railroadCount) + " to " + owner.getName());
+    } else if (owner == p) {
       println(p.getName() + " owns " + name);
     }
   }

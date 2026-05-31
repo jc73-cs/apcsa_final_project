@@ -20,6 +20,10 @@ class Player {
     this.assetsOwned = new ArrayList<AbstractSpace>();
   }
   
+  public void setMoney(int money) {
+    this.money = money; 
+  }
+  
   public void incrementTurn() { 
     turnCount++; 
   } //<>//
@@ -51,11 +55,6 @@ class Player {
   public void payMoney(int amount) { 
     money -= amount; 
   }
-  
-  public void payRent(int amount, Player owner) {
-    money -= amount;
-    owner.receiveMoney(amount);
-  }
 
   public void goToJail() {
     position = 10;
@@ -75,7 +74,7 @@ class Player {
     return inJail; 
   }
   
-  public void releaseFromJail() { 
+  public void leaveJail() { 
     inJail = false; 
     jailTurns = 0; 
   }
