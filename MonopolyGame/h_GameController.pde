@@ -641,7 +641,7 @@ PImage gameboard;
 
 void gameSetup() {
   Board board = new Board();
-  gameboard = loadImage(dataPath("images/monopoly.jpg"));
+  gameboard = loadImage(dataPath("images/monopoly.png"));
   gameboard.resize(800, 0); 
   Dice dice = new Dice();
   ArrayList<Player> players = new ArrayList<Player>();
