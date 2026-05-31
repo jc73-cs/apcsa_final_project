@@ -164,8 +164,10 @@ class GameController {
       if (space instanceof Property) {
         Property prop = (Property)space;
         if (prop.getOwner() == p) {
-          if (hotels && prop.getHouses() == 5) count++;
-          else if (!hotels && prop.getHouses() < 5) count += prop.getHouses();
+          if (hotels && prop.getHouses() == 5) 
+            count++;
+          else if (!hotels && prop.getHouses() < 5) 
+            count += prop.getHouses();
         }
       }
     }
@@ -628,7 +630,7 @@ class GameController {
     display.drawBoard();
     display.drawSidebars();
     display.drawDice();
-    display.drawLog();
+    display.drawTokens();
   }
   
   public ArrayList<Player> getPlayers() { 
@@ -647,14 +649,13 @@ void gameSetup() {
   ArrayList<Player> players = new ArrayList<Player>();
   players.add(new Player("Bot 1", 1500, new Token(0)));
   players.add(new Player("Bot 2", 1500, new Token(1)));
-  Display display = new Display(board, players, dice);
+  Display display = new Display(players, dice);
   gameControl = new GameController(board, players, dice, display);
 
 }
 
 void gameDraw() {
   background(0);
-  image(gameboard, 200, 0);
   gameControl.draw();
 }
 

@@ -16,6 +16,10 @@ class Utility extends AbstractSpace {
     return owner;
   }
   
+  public int getCost() {
+    return cost;
+  }
+  
   public int calcRent(int diceTotal, int utilityCount) {
     if(utilityCount == 0)
       return 0;

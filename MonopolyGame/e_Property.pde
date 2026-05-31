@@ -28,6 +28,10 @@ class Property extends AbstractSpace {
     return mortgaged; 
   }
   
+  public int getCost() {
+    return cost;
+  }
+  
   public void setMortgaged(boolean mortgaged) {
     this.mortgaged = mortgaged; 
   }

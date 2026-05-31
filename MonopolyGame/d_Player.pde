@@ -20,6 +20,10 @@ class Player {
     this.assetsOwned = new ArrayList<AbstractSpace>();
   }
   
+  public Token getToken() {
+    return token;
+  }
+  
   public void setMoney(int money) {
     this.money = money; 
   }

@@ -1,5 +1,5 @@
 void setup() {
-  size(1200, 800);
+  size(1280, 800);
   gameSetup(); 
 }
   
