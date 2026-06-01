@@ -31,7 +31,8 @@ class Display {
       if (i == 0) {
         spaceX[i] = boardX + boardSize - cornerSize / 2;
         spaceY[i] = boardY + boardSize - cornerSize / 2;
-      } else {
+      } 
+      else {
         spaceX[i] = boardX + boardSize - cornerSize - (i - 0.5) * spaceSize;
         spaceY[i] = boardY + boardSize - cornerSize / 2;
       }
@@ -40,7 +41,8 @@ class Display {
       if (i == 10) {
         spaceX[i] = boardX + cornerSize / 2;
         spaceY[i] = boardY + boardSize - cornerSize / 2;
-      } else {
+      } 
+      else {
         spaceX[i] = boardX + cornerSize / 2;
         spaceY[i] = boardY + boardSize - cornerSize - (i - 10 - 0.5) * spaceSize;
       }
@@ -49,7 +51,8 @@ class Display {
       if (i == 20) {
         spaceX[i] = boardX + cornerSize / 2;
         spaceY[i] = boardY + cornerSize / 2;
-      } else {
+      } 
+      else {
         spaceX[i] = boardX + cornerSize + (i - 20 - 0.5) * spaceSize;
         spaceY[i] = boardY + cornerSize / 2;
       }
@@ -58,7 +61,8 @@ class Display {
       if (i == 30) {
         spaceX[i] = boardX + boardSize - cornerSize / 2;
         spaceY[i] = boardY + cornerSize / 2;
-      } else {
+      }
+      else {
         spaceX[i] = boardX + boardSize - cornerSize / 2;
         spaceY[i] = boardY + cornerSize + (i - 30 - 0.5) * spaceSize;
       }
@@ -177,28 +181,28 @@ class Display {
   float barY = boardY + boardSize + 10;
   float barH = height - barY - 10;
   float sectionW = boardSize / 2;
-    float section1X = boardX;
+    float sectionTurnsX = boardX;
     fill(30);
-    rect(section1X, barY, sectionW, barH);
+    rect(sectionTurnsX, barY, sectionW, barH);
     fill(255);
     textAlign(CENTER);
     textSize(14);
-    text("Total Turns", section1X + sectionW / 2, barY + barH * 0.4);
+    text("Total Turns", sectionTurnsX + sectionW / 2, barY + barH * 0.4);
     textSize(32);
     int totalTurns = 0;
     for (Player p : players) {
       totalTurns += p.getTurnCount();
     }
-    text(totalTurns, section1X + sectionW / 2, barY + barH * 0.75);
-    float section2X = boardX + sectionW;
+    text(totalTurns, sectionTurnsX + sectionW / 2, barY + barH * 0.75);
+    float sectionDiceX = boardX + sectionW;
     fill(30);
-    rect(section2X, barY, sectionW, barH);
+    rect(sectionDiceX, barY, sectionW, barH);
     fill(255);
     textAlign(CENTER);
     textSize(14);
-    text("Dice", section2X + sectionW / 2, barY + barH * 0.4);
+    text("Dice", sectionDiceX + sectionW / 2, barY + barH * 0.4);
     textSize(32);
-    text(dice.getDie1() + "  +  " + dice.getDie2() + "  =  " + dice.getTotal(), section2X + sectionW / 2, barY + barH * 0.75);
+    text(dice.getDie1() + "  +  " + dice.getDie2() + "  =  " + dice.getTotal(), sectionDiceX + sectionW / 2, barY + barH * 0.75);
   }
   
   private color getColor(String colorGroup) {

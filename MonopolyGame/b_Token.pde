@@ -1,9 +1,7 @@
 class Token {
-  private int boardIndex;
   public float screenX, screenY; 
   
   public Token(int boardIndex) {
-    this.boardIndex = boardIndex;
     this.screenX = 0;
     this.screenY = 0;
   }
