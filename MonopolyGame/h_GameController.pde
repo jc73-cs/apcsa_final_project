@@ -544,15 +544,15 @@ class GameController {
     }
   }
   
-  private void handlePayment(Player p, int amount, Player creditor) {
+  private void handlePayment(Player p, int amount, Player p2) {
     if (p.getMoney() < amount) {
       mortgageToCover(p, amount);
     }
     if (p.getMoney() >= amount) {
       p.payMoney(amount);
-      if (creditor != null) creditor.receiveMoney(amount);
+      if (p2 != null) p2.receiveMoney(amount);
     } else {
-      handleBankruptcy(p, creditor);
+      handleBankruptcy(p, p2);
     }
   }
   
@@ -647,8 +647,8 @@ void gameSetup() {
   gameboard.resize(800, 0); 
   Dice dice = new Dice();
   ArrayList<Player> players = new ArrayList<Player>();
-  players.add(new Player("Bot 1", 1500, new Token(0)));
-  players.add(new Player("Bot 2", 1500, new Token(1)));
+  players.add(new Player("Bot 1", 1500, new Token()));
+  players.add(new Player("Bot 2", 1500, new Token()));
   Display display = new Display(players, dice);
   gameControl = new GameController(board, players, dice, display);
 
